@@ -19,7 +19,6 @@ app.get('/health', (req, res) => {
 // Conexão com o MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
   tls: true,
-  minTLSVersion: 'TLSv1.2',
 })
   .then(() => {
     console.log('Conexão bem sucedida com o MongoDB');
