@@ -1,25 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const cors = require('cors');  // Importa o middleware cors
+const cors = require('cors');
 const complaintsRoute = require('./routes/complaints');
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());  // Ativa o CORS para todas as rotas
-
-// Caso fosse limitar o acesso do CORS
-// const corsOptions = {
-//     origin: 'http://127.0.0.1:5500',
-//     optionsSuccessStatus: 200
-// };
-// app.use(cors(corsOptions));
-
+app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI);
+// Rota de saúde
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Server is running' });
+});
+
+// Conexão com o MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  tls: true,
+  minTLSVersion: 'TLSv1.2',
+})
+  .then(() => {
+    console.log('Conexão bem sucedida com o MongoDB');
+  })
+  .catch((error) => {
+    console.error(' Conexão com o MongoDb falhou', error.message);
+  });
 
 app.use('/api/complaints', complaintsRoute);
 
